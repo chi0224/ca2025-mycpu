@@ -119,7 +119,8 @@ class Rx(frequency: Int, baudRate: Int) extends Module {
     cntReg := cntReg - 1.U
   }.elsewhen(bitsReg =/= 0.U) {
     cntReg   := BIT_CNT
-    shiftReg := Cat(rxReg, shiftReg >> 1)
+    //shiftReg := Cat(rxReg, shiftReg >> 1)
+    shiftReg := Cat(rxReg, shiftReg(7, 1))
     bitsReg  := bitsReg - 1.U
     // the last shifted in
     when(bitsReg === 1.U) {
