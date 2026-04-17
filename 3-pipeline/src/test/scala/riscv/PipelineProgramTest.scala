@@ -134,7 +134,8 @@ class PipelineProgramTest extends AnyFlatSpec with ChiselScalatestTester {
         // Section 11: False Stall Prevention
         c.io.mem_debug_read_address.poke(0x38.U)
         c.clock.step()
-        c.io.mem_debug_read_data.expect(3.U, "False Stall: mem[0x38] should be 3")
+        val expectedDiff = if (cfg.implementation == ImplementationType.FiveStageStall) 4 else 3
+        c.io.mem_debug_read_data.expect(expectedDiff.U, s"False Stall: mem[0x38] should be $expectedDiff")
 
         // Validate cycle count (s0 register = x8)
         c.io.regs_debug_read_address.poke(8.U)

@@ -170,31 +170,32 @@ class Control extends Module {
   // detection logic implemented above
   //
   // Q1: Why do we need to stall for load-use hazards?
-  // A: [Student answer here]
+  // A: Load 的資料在 MEM 末才產出，但下一道指令 EX 初就需要，forwarding 也無法跨越這 1 個週期的差距，所以必須插入 1 個 stall bubble，讓 Load 先完成 MEM，再透過 MEM→EX 轉發。
   // Hint: Consider data dependency and forwarding limitations
   //
   // Q2: What is the difference between "stall" and "flush" operations?
-  // A: [Student answer here]
+  // A: Stall：凍結管線（讓同一道指令再待一個週期），PC 不前進，上游暫存器不更新，同時在 ID/EX 插入 NOP bubble
+  //    Flush：清除管線（把已取入但不該執行的指令替換成 NOP），PC 繼續前進到正確目標
   // Hint: Compare their effects on pipeline registers and PC
   //
   // Q3: Why does jump instruction with register dependency need stall?
-  // A: [Student answer here]
+  // A: JALR 的跳轉目標是 rs1 + offset，rs1 必須在 ID 階段就算出正確位址。若 rs1 來自前一道 Load（EX 階段尚未完成），就無法在 ID 確定跳轉目標，必須 stall。
   // Hint: When is jump target address available?
   //
   // Q4: In this design, why is branch penalty only 1 cycle instead of 2?
-  // A: [Student answer here]
+  // A: FiveStageFinal 在 ID 階段就完成分支比較（搭配 ID-stage forwarding），只需要清除 IF 階段取錯的那一道指令，不像傳統設計要等到 EX 才判斷而需清 IF+ID（2 個週期）。
   // Hint: Compare ID-stage vs EX-stage branch resolution
   //
   // Q5: What would happen if we removed the hazard detection logic entirely?
-  // A: [Student answer here]
+  // A: 資料危害會導致 ALU 讀到舊值；控制危害會導致繼續執行不該執行的指令，程式邏輯完全崩潰。
   // Hint: Consider data hazards and control flow correctness
   //
   // Q6: Complete the stall condition summary:
   // Stall is needed when:
-  // 1. ? (EX stage condition)
-  // 2. ? (MEM stage condition)
+  // 1. EX 階段有 Load 且下一道指令使用該 rd（load-use）/ ID 階段是 JALR 且 EX 有 Load 到相同 rd（jump+load 相依）或是與 EX rd有相依關係 (EX stage condition)
+  // 2. ID 階段是 JALR 且 MEM 有 Load 到相同 rd（兩週期距離的 jump+load） (MEM stage condition)
   //
   // Flush is needed when:
-  // 1. ? (Branch/Jump condition)
+  // 1. Branch/jump instruction is taken in ID stage (Branch/Jump condition)
   //
 }
