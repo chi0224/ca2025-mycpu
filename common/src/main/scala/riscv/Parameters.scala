@@ -48,4 +48,23 @@ object Parameters {
 
   // Timer peripheral configuration
   val TimerDefaultLimit = 100000000 // 100M cycles (~1s at 100MHz)
+
+  //Vector Extention
+  val VLENBits        = 128
+  val VLEN            = VLENBits.W
+  val ELENBits        = 32
+  val ELEN            = ELENBits.W
+
+  val NumLanes        = VLENBits / ELENBits
+
+  val VMemDataBits    = VLENBits
+  val VMemDataWidth   = VMemDataBits.W
+  val VMemStrobeBytes = VLENBits / 8
+
+  val VRegCount          = 32
+  val VRegAddrBits       = log2Up(VRegCount)
+  val VRegAddrWidth      = VRegAddrBits.W
+
+  val VLBits             = log2Up(NumLanes + 1)
+  val VLWidth            = VLBits.W
 }

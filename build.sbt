@@ -10,7 +10,7 @@ val chiselVersion = "3.6.1"
 
 // Root aggregate project
 lazy val root = (project in file("."))
-  .aggregate(common, minimal, singleCycle, mmioTrap, pipeline, soc)
+  .aggregate(common, minimal, singleCycle, mmioTrap, pipeline, soc, vector)
   .settings(
     name := "mycpu-root"
   )
@@ -144,4 +144,26 @@ lazy val soc = (project in file("4-soc"))
     addCompilerPlugin("edu.berkeley.cs" % "chisel3-plugin" % chiselVersion cross CrossVersion.full),
     Test / fork := true,
     Test / javaOptions += s"-Duser.dir=${(ThisBuild / baseDirectory).value}/4-soc",
+  )
+
+//5-vector Basic RV32I single-cycle processor with RISC-V Vector Extension subset
+//Extends 1-single-cycle with vector ALU, vector register file, and vector memory
+lazy val vector = (project in file("5-vector"))
+  .dependsOn(common)
+  .settings(
+    name := "mycpu-vector",
+    libraryDependencies ++= Seq(
+      "edu.berkeley.cs" %% "chisel3"    % chiselVersion,
+      "edu.berkeley.cs" %% "chiseltest" % "0.6.0" % "test",
+      "edu.berkeley.cs" %% "firrtl"     % "1.6.0",
+    ),
+    scalacOptions ++= Seq(
+      "-language:reflectiveCalls",
+      "-feature",
+      "-Xcheckinit",
+      "-Wconf:cat=deprecation:s",
+    ),
+    addCompilerPlugin("edu.berkeley.cs" % "chisel3-plugin" % chiselVersion cross CrossVersion.full),
+    Test / fork := true,
+    Test / javaOptions += s"-Duser.dir=${(ThisBuild / baseDirectory).value}/5-vector",
   )

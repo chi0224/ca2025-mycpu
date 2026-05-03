@@ -60,3 +60,7 @@ test_run_dir/
 **/src/test/scala/riscv/compliance/ComplianceTest.scala
 **/src/main/resources/test.asmbin
 **/src/main/resources/test_*.asmbin
+.bloop/
+project/.bloop/
+project/project/
+project/metals.sbt
